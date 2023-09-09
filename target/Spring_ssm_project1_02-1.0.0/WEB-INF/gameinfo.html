@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <base href="/game_sys/">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>游戏管理系统</title>
+<link rel="icon" href="favicon.ico" type="image/ico">
+<meta name="keywords" content="LightYear,光年,后台模板,后台管理系统,光年HTML模板">
+<meta name="description" content="LightYear是一个基于Bootstrap v3.3.7的后台管理系统的HTML模板。">
+<meta name="author" content="yinqi">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/materialdesignicons.min.css" rel="stylesheet">
+<link href="css/style.min.css" rel="stylesheet">
+  <link href="css/animate.css" rel="stylesheet">
+<!--  删除弹出框-->
+  <link rel="stylesheet" href="js/jconfirm/jquery-confirm.min.css">
+  <!--时间选择插件-->
+  <link rel="stylesheet" href="js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css">
+  <!--日期选择插件-->
+  <link rel="stylesheet" href="js/bootstrap-datepicker/bootstrap-datepicker3.min.css">
+  <!--  前端表单验证css-->
+  <link rel="stylesheet" href="css/bootstrapValidator.css"/>
+
+</head>
+  
+<body>
+<script type="text/javascript" src="js/template-web.js"></script>
+<script src="js/jquery-3.4.1.min.js"></script>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <!--左侧导航-->
+    <aside class="lyear-layout-sidebar">
+       
+      <!-- logo -->
+      <div id="logo" class="sidebar-header">
+        <a href="admin/index"><img src="/game_sys/images/logo2.png" title="Steann" alt="Steann" /></a>
+      </div>
+      <div class="lyear-layout-sidebar-scroll">
+        
+        <nav class="sidebar-main">
+          <ul class="nav nav-drawer">
+            <li class="nav-item"> <a href="admin/index"><i class="mdi mdi-home"></i> 后台首页</a> </li>
+            <li class="nav-item nav-item-has-subnav active open">
+              <a href="javascript:void(0)"><i class="mdi mdi-palette"></i> 查看信息</a>
+              <ul class="nav nav-subnav">
+                <li > <a href="admin/gamingcompany">游戏公司信息</a> </li>
+                <li class="active"> <a href="admin/gameinfo">游戏信息</a> </li>
+                <li> <a href="admin/feedback">游戏评价</a> </li>
+
+              </ul>
+            </li>
+          </ul>
+        </nav>
+        <div class="sidebar-footer">
+          <p class="copyright">Stenn游戏管理&copy; 2023. <a target="_blank"> All rights reserved></a></p>
+
+        </div>
+      </div>
+      
+    </aside>
+    <!--End 左侧导航-->
+
+
+    <!--头部信息-->
+    <header class="lyear-layout-header">
+
+      <nav class="navbar navbar-default">
+        <div class="topbar">
+
+          <div class="topbar-left">
+            <div class="lyear-aside-toggler">
+              <span class="lyear-toggler-bar"></span>
+              <span class="lyear-toggler-bar"></span>
+              <span class="lyear-toggler-bar"></span>
+            </div>
+            <span class="navbar-page-title"> 游戏信息</span>
+          </div>
+
+          <ul class="topbar-right">
+            <li class="dropdown dropdown-profile">
+              <a href="javascript:void(0)" data-toggle="dropdown">
+                <span > <span id="usernameinfo">用户名...</span> <span class="caret"></span></span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-right">
+                <li> <a href="admin/updatePassword"><i class="mdi mdi-lock-outline"></i> 修改密码</a> </li>
+                <li class="divider"></li>
+                <li> <a href="javascript:void(0);" onclick="logout()"><i class="mdi mdi-logout-variant"></i> 退出登录</a> </li>
+              </ul>
+            </li>
+          </ul>
+
+        </div>
+      </nav>
+
+    </header>
+    <!--End 头部信息-->
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+      
+      <div class="container-fluid">
+        
+        <div class="row" >
+          <div class="col-sm-6 col-lg-12">
+            <div class="card">
+              <div class="card-header bg-info">
+                <h4>游戏管理系统</h4>
+                <ul class="card-actions">
+                  <li>
+                    <button class="btn  btn-w-md" type="button"  style="margin-top: 0px" data-toggle="modal" onclick="ToExel()">                                        <i class="mdi mdi-20px mdi-spin mdi-star"></i>
+                      导出</button>
+                  </li>
+                  <li>
+                    <input type="text" id="selectGameByLikeName" oninput="loadGameInfo(1)" style="color: #1c1e2f" placeholder="请输入游戏名称">
+                  </li>
+                  <li>
+                    <input type="text" id="minPrice" oninput="loadGameInfo(1)" style="color: #1c1e2f" placeholder="请输入最小价格">
+                  </li>
+                  <li>
+                    <input type="text" id="maxPrice" oninput="loadGameInfo(1)" style="color: #1c1e2f" placeholder="请输入最大价格">
+                  </li>
+
+                  <li>
+                    <button class="btn  btn-w-md" type="button"  style="margin-top: 0px" data-toggle="modal" onclick="showaddModel()">                                        <i class="mdi mdi-20px mdi-spin mdi-star"></i>
+                      添加游戏</button>
+                  </li>
+                </ul>
+              </div>
+              <div class="card-body">
+                <div id="all_game_info"></div>
+                <div id="pageNo" style="align-content: center"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      
+    </main>
+    <!--End 页面主要内容-->
+  </div>
+</div>
+<script type="text/html" id="all_game">
+  <table class="table table-striped">
+    <tr>
+      <th hidden>gid</th>
+      <th>游戏序号</th>
+      <th>游戏名字</th>
+      <th>游戏类型</th>
+      <th>发售状态</th>
+      <th>发行公司</th>
+      <th>发行日期</th>
+      <th>游戏价格</th>
+      <th>操作</th>
+    </tr>
+    {{each data.list}}
+    <tr>
+      <td hidden>{{$value.gid}}</td>
+      <td>{{$value.gno}}</td>
+      <td>{{$value.gameName}}</td>
+      <td>{{$value.gameType}}</td>
+
+      {{if $value.status ==0}}
+      <td><span class="label label-default">未入库</span></td>
+      {{else}}
+      <td><span class="label label-info">已入库</span></td>
+
+      {{/if}}
+
+
+      <td>{{$value.cname}}</td>
+      <td>{{$value.releaseDate}}</td>
+      <td>{{$value.price}}</td>
+      <td><button type="button" class="btn btn-label btn-warning "onclick="showupdModel('{{$value.gid}}')" style="height: 30px"><label><i class="mdi mdi-owl"></i>修改</label></button>
+        <button type="button" class="btn btn-label btn-danger " onclick="delGame('{{$value.gid}}')" style="height: 30px"><label><i class="mdi mdi-close"></i>删除</label></button></td>
+    </tr>
+    {{/each}}
+  </table>
+</script>
+
+<!--添加模态框-->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">添加游戏</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" id="addform">
+          <div class="form-group">
+            <label for="addgid" class="col-sm-2 control-label">游戏名字</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="addgid" name="gameName" placeholder="请输入游戏名字">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="addgtype" class="col-sm-2 control-label">游戏类型</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="addgtype" name="gameType" placeholder="请输入游戏类型">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="addstatus" class="col-sm-2 control-label">在售状态</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="addstatus" name="status" placeholder="请输入在售状态">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">游戏公司</label>
+            <div class="col-sm-10">
+              <!--选择框-->
+              <div class="form-group" id="all_cname_add">
+
+              </div>
+
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="addReleasedate" class="col-sm-2 control-label">发售日期</label>
+            <div class="col-sm-10">
+              <input class="form-control js-datepicker m-b-10" type="text" id="addReleasedate" name="releaseDate" placeholder="请选择发售日期" value="" data-date-format="yyyy年mm月dd日" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="addPrice" class="col-sm-2 control-label">游戏价格</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="addPrice" name="price" placeholder="请输入游戏价格">
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" onclick="addCompany()">确认</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--添加模态框--end-->
+
+
+<!--修改模态框-->
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">修改游戏</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" id="updateform">
+          <input type="hidden" id="updgid" name="gid">
+          <!--<input type="text" id="updatecid" name="cid">-->
+          <div class="form-group">
+            <label for="updgid" class="col-sm-2 control-label">游戏名字</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="updgname" name="gameName" placeholder="请输入游戏名字">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="updgtype" class="col-sm-2 control-label">游戏类型</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="updgtype" name="gameType" placeholder="请输入游戏类型">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="updstatus" class="col-sm-2 control-label">在售状态</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="updstatus" name="status" placeholder="请输入在售状态">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="all_cname_upd" class="col-sm-2 control-label">游戏公司</label>
+            <div class="col-sm-10">
+
+              <div class="form-group" id="all_cname_upd">
+
+              </div>
+
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="updReleasedate" class="col-sm-2 control-label">发售日期</label>
+            <div class="col-sm-10">
+              <input class="form-control js-datepicker m-b-10" type="text" id="updReleasedate" name="releaseDate" placeholder="请选择发售日期" value="" data-date-format="yyyy年mm月dd日" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="updPrice" class="col-sm-2 control-label">游戏价格</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="updPrice" name="price" placeholder="请输入游戏价格">
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" onclick="update()">确认</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--修改模态框--end-->
+
+
+<script type="text/html" id="all_pageNo">
+  <nav style="align-content: center">
+    <ul class="pagination no-border">
+
+      {{if data.hasPreviousPage}}
+      <li><a href="javascript:void(0);" onclick="loadGameInfo('{{data.prePage}}')"><span><i class="mdi mdi-chevron-left"></i></span></a></li>
+      {{else}}
+      <li class="disabled"><a href="javascript:void(0);"><span><i class="mdi mdi-chevron-left"></i></span></a></li>
+
+      {{/if}}
+
+      {{each data.navigatepageNums}}
+       {{if $value ==data.pageNum}}
+      <li class="active"><a href="javascript:void(0);"onclick="loadGameInfo('{{$value}}')">{{$value}}</a></li>
+      {{else}}
+      <li><a href="javascript:void(0);" onclick="loadGameInfo('{{$value}}')">{{$value}}</a></li>
+       {{/if}}
+      {{/each}}
+
+      {{if data.hasNextPage}}
+      <li><a href="javascript:void(0);" onclick="loadGameInfo('{{data.nextPage}}')"><span><i class="mdi mdi-chevron-right"></i></span></a></li>
+
+      {{else}}
+      <li class="disabled"><a href="javascript:void(0);"><span><i class="mdi mdi-chevron-right"></i></span></a></li>
+
+      {{/if}}
+
+    </ul>
+  </nav>
+</script>
+<!--在增加模态框显示所有公司-->
+
+<script type="text/html" id="all_CompanyById">
+  <div class="col-xs-12">
+    <select class="form-control" id="cid" name="cid" size="1">
+      <option name="na1" value="0">请选择</option>
+      {{each data}}
+      <option  value="{{$value.cid}}">{{$value.cname}}</option>
+      {{/each}}
+    </select>
+  </div>
+  </script>
+
+<!--在修改框显示所有公司-->
+<script type="text/html" id="all_CompanyById_upd">
+  <div class="col-xs-12">
+    <select class="form-control" id="cid_upd" name="cid" size="1">
+      <option disabled hidden selected  value="0">--请选择--</option>
+      <option value="aa" id="aaid" >aa</option>
+      {{each data}}
+
+      <option  value="{{$value.cid}}" >{{$value.cname}}</option>
+      <!--<option  value="{{$value.cid}}">{{$value.cname}}</option>-->
+
+      {{/each}}
+    </select>
+  </div>
+</script>
+
+
+
+
+<script type="text/javascript">
+  var currentP=0;
+
+$(function () {
+  loadGameInfo();
+  getInfo();
+
+
+})
+  //导出到Excel的方法
+  function ToExel() {
+    $.ajax({
+      url:"GameInfoController/toExcel",
+      data:{searchName:$('#selectGameByLikeName').val(),minPrice:$('#minPrice').val(),maxPrice:$('#maxPrice').val(),currentPage:null},
+      type:"GET",
+      dataType:'JSON',
+      success:function (resp) {
+
+        if(resp.code==10000){
+
+          lightyear.notify(resp.msg,'success',1000,'mdi mdi-emotion-happy','top','center')
+
+        }else{
+          lightyear.notify(resp.msg,'danger',1000,'mdi mdi-emotion-sad','top','center')
+        }
+
+      }
+    })
+
+
+  }
+
+
+
+function getInfo() {
+  $.ajax({
+    url:"userInfo",
+    type:"GET",
+    dataType:'JSON',
+    success:function (resp) {
+
+      $('#usernameinfo').text(resp.data.username);
+    }
+  });
+
+}
+
+  //退出登录的方法
+  function logout(){
+    $.ajax({
+      url:"logout",
+      type:"GET",
+      dataType:'JSON',
+      success:function (resp) {
+        lightyear.notify(resp.msg,'success',1000,'mdi mdi-emotion-happy','top','center','/')
+      }
+    });
+  }
+  //显示页面信息的方法
+  function loadGameInfo(currentPage) {
+  currentP=currentPage;
+    $.ajax({
+      url:"GameInfoController/selectByPage",
+      data:{
+        searchName:$('#selectGameByLikeName').val(),
+        minPrice:$('#minPrice').val(),
+        maxPrice:$('#maxPrice').val(),
+        currentPage:currentPage
+      },
+      type:"GET",
+      dataType:'JSON',
+      success:function (resp) {
+        console.log(resp)
+
+        if(resp.code==10000){
+          let html=template('all_game',{data:resp.data});
+          $('#all_game_info').html(html);
+          let html1 =template('all_pageNo',{data:resp.data})
+          $('#pageNo').html(html1);
+
+        }else{
+          lightyear.notify(resp.msg,'danger',1000,'mdi mdi-emotion-sad','top','center')
+        }
+
+      }
+    })
+  }
+
+//显示添加模态框的方法
+function showaddModel() {
+  $('#addModal').modal('show');
+
+  $.ajax({
+    url:"GameInfoController/selectAllCname",
+    dataType:"JSON",
+    type:"GET",
+    success:function (resp) {
+      let allCname=template('all_CompanyById',{data:resp.data});
+      $('#all_cname_add').html(allCname);
+    }
+  });
+}
+//添加的方法
+function addCompany() {
+  $("#addform").data('bootstrapValidator').validate();//相当于触发一次所有的验证
+  if($("#addform").data('bootstrapValidator').isValid()) {//判断验证是否已经通过
+
+    lightyear.loading('show');
+    $.ajax({
+      url:"GameInfoController/addGame",
+      type:"post",
+      data:$('#addform').serialize(),
+      dataType:"JSON",
+      success:function (resp) {
+        lightyear.loading('hide');
+        if(resp.code ==10000){
+          lightyear.notify(resp.msg,'success',1000,'mdi mdi-emotion-happy','top','center')
+          //隐藏添加模态框
+          $('#addModal').modal('hide');
+          //清空模态框中的数据
+          // $('#addform')[0].reset();
+          $('#addform').data('bootstrapValidator').resetForm(true);
+
+          //查询所有公司
+          loadGameInfo();
+        }else {
+          lightyear.notify(resp.msg,'danger',1000,'mdi mdi-emotion-sad','top','center')
+        }
+
+      }
+    })
+
+
+  }
+
+
+
+}
+
+
+
+//删除的方法
+function delGame(gid) {
+
+  $.alert({
+    content: '确认要删除吗',
+    buttons: {
+      confirm: {
+        text: '确认',
+        btnClass: 'btn-primary',
+        action: function(){
+          lightyear.loading('show');
+          $.ajax({
+            url: "GameInfoController/delGame",
+            type: "post",
+            data: {gid: gid},
+            dataType: "JSON",
+            success:function (resp) {
+              lightyear.loading('hide');
+              if(resp.code ==10000){
+                lightyear.notify(resp.msg,'success',1000,'mdi mdi-emotion-happy','top','center')
+                //显示当前页
+                loadGameInfo(currentP);
+              }else {
+                lightyear.notify(resp.msg,'danger',1000,'mdi mdi-emotion-sad','top','center')
+              }
+            }
+          });
+        }
+      },
+      cancel: {
+        text: '取消',
+      }
+    }
+  });
+}
+
+
+
+
+  //显示修改模态框的方法
+  function showupdModel(gid) {
+
+    $.ajax({
+      url:"GameInfoController/selectAllCname",
+      dataType:"JSON",
+      type:"GET",
+      success:function (resp) {
+        let allCname=template('all_CompanyById_upd',{data:resp.data});
+        $('#all_cname_upd').html(allCname);
+
+        $.ajax({
+          url:"GameInfoController/selectByGid",
+          type:"GET",
+          data:{gid:gid},
+          dataType:"JSON",
+          success:function (resp) {
+            lightyear.loading('hide');
+
+            if(resp.code==10000) {
+
+              lightyear.notify(resp.msg, 'success', 1000, 'mdi mdi-emotion-happy', 'top', 'center');
+              $('#updgid').val(resp.data.gid);
+              $('#updgname').val(resp.data.gameName);
+              $('#updgtype').val(resp.data.gameType);
+              $('#updstatus').val(resp.data.status);
+
+
+              $('option[value="'+resp.data.cid+'"]').attr("selected","selected");
+
+              $('#updReleasedate').val(resp.data.releaseDate);
+
+              $('#updPrice').val(resp.data.price);
+
+              $('#updateModal').modal('show');
+            }
+          }
+        })
+
+
+
+      }
+    });
+
+
+
+
+  }
+
+
+
+  //修改的方法
+  function update() {
+
+    $("#updateform").data('bootstrapValidator').validate();//相当于触发一次所有的验证
+    if($("#updateform").data('bootstrapValidator').isValid()) {//判断验证是否已经通过
+
+      lightyear.loading('show');
+      $.ajax({
+        url:"GameInfoController/updGameInf",
+        type:"post",
+        data:$('#updateform').serialize(),
+        dataType:"JSON",
+        success:function (resp) {
+          lightyear.loading('hide');
+          if(resp.code ==10000){
+            lightyear.notify(resp.msg,'success',1000,'mdi mdi-emotion-happy','top','center')
+            //隐藏添加模态框
+            $('#updateModal').modal('hide');
+            //清空模态框中的数据
+            $('#updateform')[0].reset();
+            //查询所有公司
+            loadGameInfo(currentP);
+          }else {
+            lightyear.notify(resp.msg,'danger',1000,'mdi mdi-emotion-sad','top','center')
+          }
+        }
+      })
+
+    }
+
+  }
+
+  //前端对表单的内容校验
+  $(function () {
+
+    //增加框的校验
+
+    $("#addform").bootstrapValidator({
+      fields:{//哪些字段需要验证，和html中的输入框，下拉框等等表单name属性所对应。
+        gamename:{
+          validators:{//从这里也可以容易的看出可以有多个验证信息
+            notEmpty:{//非空验证
+              message:"名字为空" //提示信息，当你不写这里时它会自动的调用自带的提示信息，默认是英文，可导入language下的中文JS文件
+            },
+            regexp:{
+              regexp:/^[\u4e00-\u9fa5_a-zA-Z0-9\s*]{2,20}$/,
+              message:"非法的游戏名"
+            }
+          }
+        },
+        gametype:{
+          validators:{
+            notEmpty:{
+              message:"游戏类型为空"
+            },
+            regexp:{
+              regexp:/^[\u4e00-\u9fa5_a-zA-Z0-9\s*]{1,10}$/,
+              message:"非法游戏类型"
+            }
+          }
+        },
+        status:{
+          validators:{
+            notEmpty:{
+              message:"发售状态为空"
+            },
+            regexp:{
+              regexp:/^[0-1]$/,
+              message:"非法的发售状态"
+            }
+          }
+        },
+
+        cid:{
+          validators:{
+            notEmpty:{
+              message:"发售公司为空"
+            },
+            regexp:{
+              regexp:/^[\d]+$/,
+              message:"发售公司错误"
+            }
+          }
+        },
+
+        releasedateStr:{
+          validators:{
+            notEmpty:{
+              message:"游戏发售时间为空"
+            },
+            regexp:{
+              regexp:/^[\u4e00-\u9fa5_a-zA-Z0-9\s*]{1,10}$/,
+              message:"非法的时间类型"
+            }
+          }
+        },
+
+        price:{
+          validators:{
+            notEmpty:{
+              message:"游戏价格未填写"
+            },
+            regexp:{
+              regexp:/^\d+(\.\d+)?$/,
+              message:"非法的游戏价格"
+            }
+          }
+        },
+      }
+    });
+  //  修改框的校验
+
+    $("#updateform").bootstrapValidator({
+      fields:{//哪些字段需要验证，和html中的输入框，下拉框等等表单name属性所对应。
+        gamename:{
+          validators:{//从这里也可以容易的看出可以有多个验证信息
+            notEmpty:{//非空验证
+              message:"名字为空" //提示信息，当你不写这里时它会自动的调用自带的提示信息，默认是英文，可导入language下的中文JS文件
+            },
+            regexp:{
+              regexp:/^[\u4e00-\u9fa5_a-zA-Z0-9\s*]{2,20}$/,
+              message:"非法的游戏名"
+            }
+          }
+        },
+        gametype:{
+          validators:{
+            notEmpty:{
+              message:"游戏类型为空"
+            },
+            regexp:{
+              regexp:/^[\u4e00-\u9fa5_a-zA-Z0-9\s*]{1,10}$/,
+              message:"非法游戏类型"
+            }
+          }
+        },
+        status:{
+          validators:{
+            notEmpty:{
+              message:"发售状态为空"
+            },
+            regexp:{
+              regexp:/^[0-1]$/,
+              message:"非法的发售状态"
+            }
+          }
+        },
+
+        cid:{
+          validators:{
+            notEmpty:{
+              message:"发售公司为空"
+            },
+            regexp:{
+              regexp:/^[\d]+$/,
+              message:"发售公司错误"
+            }
+          }
+        },
+
+        releasedateStr:{
+          validators:{
+            notEmpty:{
+              message:"游戏发售时间为空"
+            },
+            regexp:{
+              regexp:/^[\u4e00-\u9fa5_a-zA-Z0-9\s*]{1,10}$/,
+              message:"非法的时间类型"
+            }
+          }
+        },
+
+        price:{
+          validators:{
+            notEmpty:{
+              message:"游戏价格未填写"
+            },
+            regexp:{
+              regexp:/^\d+(\.\d+)?$/,
+              message:"非法的游戏价格"
+            }
+          }
+        },
+      }
+    });
+
+  })
+
+
+</script>
+
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="js/main.min.js"></script>
+<!--消息提示-->
+<script src="js/jconfirm/jquery-confirm.min.js"></script>
+<script src="js/bootstrap-notify.min.js"></script>
+<script type="text/javascript" src="js/lightyear.js"></script>
+<script type="text/javascript" src="js/main.min.js"></script>
+<!--日期选择插件-->
+<script src="js/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script src="js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<!--前端表单验证-->
+<script type="text/javascript" src="js/bootstrapValidator.js"></script>
+
+</body>
+</html>

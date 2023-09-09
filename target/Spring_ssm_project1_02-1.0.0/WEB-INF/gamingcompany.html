@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <base href="/game_sys/">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>游戏管理系统</title>
+<link rel="icon" href="favicon.ico" type="image/ico">
+<meta name="keywords" content="LightYear,光年,后台模板,后台管理系统,光年HTML模板">
+<meta name="description" content="LightYear是一个基于Bootstrap v3.3.7的后台管理系统的HTML模板。">
+<meta name="author" content="yinqi">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/materialdesignicons.min.css" rel="stylesheet">
+<link href="css/style.min.css" rel="stylesheet">
+  <link href="css/animate.css" rel="stylesheet">
+<!--  删除弹出框-->
+  <link rel="stylesheet" href="js/jconfirm/jquery-confirm.min.css">
+  <!--  前端表单验证css-->
+  <link rel="stylesheet" href="css/bootstrapValidator.css"/>
+</head>
+  
+<body>
+<script type="text/javascript" src="js/template-web.js"></script>
+<script src="js/jquery-3.4.1.min.js"></script>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <!--左侧导航-->
+    <aside class="lyear-layout-sidebar">
+       
+      <!-- logo -->
+      <div id="logo" class="sidebar-header">
+        <a href="admin/index"><img src="/game_sys/images/logo2.png" title="LightYear" alt="LightYear" /></a>
+      </div>
+      <div class="lyear-layout-sidebar-scroll">
+        
+        <nav class="sidebar-main">
+          <ul class="nav nav-drawer">
+            <li class="nav-item"> <a href="admin/index"><i class="mdi mdi-home"></i> 后台首页</a> </li>
+            <li class="nav-item nav-item-has-subnav active open">
+              <a href="javascript:void(0)"><i class="mdi mdi-palette"></i> 查看信息</a>
+              <ul class="nav nav-subnav">
+                <!--todo 页面无法跳转-->
+                <li class="active"> <a href="admin/gamingcompany">游戏公司信息</a> </li>
+                <li> <a href="admin/gameinfo">游戏信息</a> </li>
+                <li> <a href="admin/feedback">游戏评价</a> </li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+        <div class="sidebar-footer">
+          <p class="copyright">Stenn游戏管理&copy; 2023. <a target="_blank" All rights reserved./></p>
+
+        </div>
+      </div>
+      
+    </aside>
+    <!--End 左侧导航-->
+    
+    <!--头部信息-->
+    <header class="lyear-layout-header">
+
+      <nav class="navbar navbar-default">
+        <div class="topbar">
+
+          <div class="topbar-left">
+            <div class="lyear-aside-toggler">
+              <span class="lyear-toggler-bar"></span>
+              <span class="lyear-toggler-bar"></span>
+              <span class="lyear-toggler-bar"></span>
+            </div>
+            <span class="navbar-page-title"> 厂商信息</span>
+          </div>
+
+          <ul class="topbar-right">
+            <li class="dropdown dropdown-profile">
+              <a href="javascript:void(0)" data-toggle="dropdown">
+
+                <span > <span id="usernameinfo">用户名...</span> <span class="caret"></span></span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-right">
+                <li> <a href="admin/updatePassword"><i class="mdi mdi-lock-outline"></i> 修改密码</a> </li>
+                <li class="divider"></li>
+                <li> <a href="javascript:void(0);" onclick="logout()"><i class="mdi mdi-logout-variant"></i> 退出登录</a> </li>
+              </ul>
+            </li>
+          </ul>
+
+        </div>
+      </nav>
+
+    </header>
+    <!--End 头部信息-->
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+      
+      <div class="container-fluid">
+        
+        <div class="row">
+          <div class="col-sm-6 col-lg-12">
+            <div class="card">
+              <div class="card-header bg-info">
+                <h4>游戏管理系统</h4>
+                <ul class="card-actions">
+                  <li>
+                    <button class="btn  btn-w-md" type="button"  style="margin-top: 0px" data-toggle="modal" onclick="showaddModel()">                                        <i class="mdi mdi-20px mdi-spin mdi-star"></i>
+                      添加游戏公司</button>
+                  </li>
+                </ul>
+              </div>
+              <div class="card-body">
+                <div id="all_company_info"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </main>
+    <!--End 页面主要内容-->
+  </div>
+</div>
+<script type="text/html" id="all_company">
+  <table class="table table-striped">
+    <tr>
+      <th>cid</th>
+      <th>公司名字</th>
+      <th>所属国家</th>
+      <th>操作</th>
+    </tr>
+    {{each data}}
+    <tr>
+      <td>{{$value.cid}}</td>
+      <td>{{$value.cname}}</td>
+      <td>{{$value.country}}</td>
+      <!--<button type="button" class="updateBtn" data-toggle="modal"  data-target="#myModal2" onclick="showUpd((this))">-->
+      <td>
+        <button type="button" class="btn btn-label btn-warning btn-w-md " data-toggle="modal" onclick="showupdModel('{{$value.cid}}')" style="height: 30px ; width: 60px"><label><i class="mdi mdi-owl"></i>修改</label></button>
+        <button type="button" class="btn btn-label btn-danger " onclick="delCompany('{{$value.cid}}')" style="height: 30px ; width: 60px"><label><i class="mdi mdi-close"></i>删除</label></button></td>
+    </tr>
+    {{/each}}
+  </table>
+</script>
+<script type="text/javascript">
+
+$(function () {
+  loaddata();
+  getInfo();
+})
+function getInfo() {
+  $.ajax({
+    url:"userInfo",
+    type:"GET",
+    dataType:'JSON',
+    success:function (resp) {
+
+      $('#usernameinfo').text(resp.data.username);
+    }
+  });
+
+}
+
+//退出登录的方法
+function logout(){
+  $.ajax({
+    url:"logout",
+    type:"GET",
+    dataType:'JSON',
+    success:function (resp) {
+      lightyear.notify(resp.msg,'success',1000,'mdi mdi-emotion-happy','top','center','/')
+    }
+  });
+}
+  //显示页面信息的方法
+  function loaddata() {
+    $.ajax({
+      url:"selectAllCompany",
+      type:"GET",
+      dataType:'JSON',
+      success:function (resp) {
+        console.log(resp)
+        let html=template('all_company',{data:resp.data});
+        $('#all_company_info').html(html);
+      }
+    })
+  }
+
+//显示添加模态框的方法
+function showaddModel() {
+  $('#addModal').modal('show');
+}
+
+//显示修改模态框的方法
+function showupdModel(cid) {
+  $.ajax({
+    url:"selectByCid",
+    type:"GET",
+    data:{cid:cid},
+    dataType:"JSON",
+    success:function (resp) {
+      lightyear.loading('hide');
+      if(resp.code==10000) {
+        lightyear.notify(resp.msg, 'success', 1000, 'mdi mdi-emotion-happy', 'top', 'center');
+        $('#updCid').val(cid);
+        $('#updateCompany').val(resp.data.cname);
+        $('#updateCountry').val(resp.data.country);
+        $('#updateModal').modal('show');
+      }
+    }
+  })
+
+}
+
+
+//添加的方法
+function addCompany() {
+  $("#addform").data('bootstrapValidator').validate();//相当于触发一次所有的验证
+  if($("#addform").data('bootstrapValidator').isValid()) {//判断验证是否已经通过
+    lightyear.loading('show');
+    $.ajax({
+      url:"addCompany",
+      type:"post",
+      data:$('#addform').serialize(),
+      dataType:"JSON",
+      success:function (resp) {
+        lightyear.loading('hide');
+        if(resp.code ==10000){
+          lightyear.notify(resp.msg,'success',1000,'mdi mdi-emotion-happy','top','center')
+          //隐藏添加模态框
+          $('#addModal').modal('hide');
+          //清空模态框中的数据
+          $('#addform').data('bootstrapValidator').resetForm(true);
+          //查询所有公司
+          loaddata();
+        }else {
+          lightyear.notify(resp.msg,'danger',1000,'mdi mdi-emotion-sad','top','center')
+        }
+      }
+    })
+
+  }
+
+
+
+}
+
+//删除的方法
+function delCompany(cid) {
+  $.alert({
+    title:'删除',
+    content: '确认要删除吗',
+    buttons: {
+      confirm: {
+        text: '确认',
+        btnClass: 'btn-primary',
+        action: function(){
+          lightyear.loading('show');
+          $.ajax({
+            url: "deleteCompany",
+            type: "post",
+            data: {cid: cid},
+            dataType: "JSON",
+            success:function (resp) {
+              lightyear.loading('hide');
+              if(resp.code ==10000){
+                lightyear.notify(resp.msg,'success',1000,'mdi mdi-emotion-happy','top','center')
+                //查询所有公司
+                loaddata();
+              }else {
+                lightyear.notify(resp.msg,'danger',1000,'mdi mdi-emotion-sad','top','center')
+              }
+            }
+          });
+        }
+      },
+      cancel: {
+        text: '取消',
+      }
+    }
+  });
+
+
+}
+
+//修改的方法
+function update() {
+  $("#updateform").data('bootstrapValidator').validate();//相当于触发一次所有的验证
+  if($("#updateform").data('bootstrapValidator').isValid()) {//判断验证是否已经通过
+
+
+    lightyear.loading('show');
+    $.ajax({
+      url:"updateCompany",
+      type:"post",
+      data:$('#updateform').serialize(),
+      dataType:"JSON",
+      success:function (resp) {
+        lightyear.loading('hide');
+        if(resp.code ==10000){
+          lightyear.notify(resp.msg,'success',1000,'mdi mdi-emotion-happy','top','center')
+          //隐藏添加模态框
+          $('#updateModal').modal('hide');
+          //清空模态框中的数据
+          $('#updateform')[0].reset();
+          //查询所有公司
+          loaddata();
+        }else {
+          lightyear.notify(resp.msg,'danger',1000,'mdi mdi-emotion-sad','top','center')
+        }
+      }
+    })
+
+  }
+
+}
+
+//对表单内容的前端校验
+$(function () {
+  //添加框的校验
+  $("#addform").bootstrapValidator({
+    fields:{//哪些字段需要验证，和html中的输入框，下拉框等等表单name属性所对应。
+      cname:{
+        validators:{//从这里也可以容易的看出可以有多个验证信息
+          notEmpty:{//非空验证
+            message:"名字未填写" //提示信息，当你不写这里时它会自动的调用自带的提示信息，默认是英文，可导入language下的中文JS文件
+          },
+          regexp:{
+            // regexp:/^[\u4E00-\u9FA5A-Za-z0-9 ]{2,20}$/,
+            regexp:/^[\u4e00-\u9fa5_a-zA-Z0-9\s]{2,20}$/,
+            message:"非法的名字"
+          }
+        }
+      },
+      country:{
+        validators:{
+          notEmpty:{
+            message:"国家未填写"
+          },
+          regexp:{
+            regexp:/^[\u4E00-\u9FA5A-Za-z0-9\s]{2,20}$/,
+            message:"非法的名字"
+          }
+        }
+      }
+    }
+  });
+
+//  修改框的校验
+  $("#updateform").bootstrapValidator({
+    fields:{//哪些字段需要验证，和html中的输入框，下拉框等等表单name属性所对应。
+      cname:{
+        validators:{//从这里也可以容易的看出可以有多个验证信息
+          notEmpty:{//非空验证
+            message:"名字未填写" //提示信息，当你不写这里时它会自动的调用自带的提示信息，默认是英文，可导入language下的中文JS文件
+          },
+          regexp:{
+            // regexp:/^[\u4E00-\u9FA5A-Za-z0-9 ]{2,20}$/,
+            regexp:/^[\u4e00-\u9fa5_a-zA-Z0-9\s]{2,20}$/,
+            message:"非法的名字"
+
+
+          }
+        }
+      },
+      country:{
+        validators:{
+          notEmpty:{
+            message:"国家未填写"
+          },
+          regexp:{
+            regexp:/^[\u4E00-\u9FA5A-Za-z0-9\s]{2,20}$/,
+            message:"非法的名字"
+          }
+        }
+      }
+    }
+  });
+})
+
+</script>
+
+
+
+<!--添加模态框-->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">添加游戏公司</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" id="addform">
+          <div class="form-group">
+            <label for="addCompany" class="col-sm-2 control-label">公司名称</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="addCompany" name="cname" placeholder="请输入公司名称">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="addCountry" class="col-sm-2 control-label">所属国家</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="addCountry" name="country" placeholder="请输入所属国家">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" onclick=" $('#addform').data('bootstrapValidator').resetForm(true);">关闭</button>
+        <button type="button" class="btn btn-primary" onclick="addCompany()">确认</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--添加模态框--end-->
+
+
+
+<!--修改模态框-->
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">修改游戏公司信息</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" id="updateform">
+          <input type="text" name="cid" id="updCid">
+          <div class="form-group">
+            <label for="updateCompany" class="col-sm-2 control-label">公司名称</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="updateCompany" name="cname" placeholder="请输入公司名称">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="updateCountry" class="col-sm-2 control-label">所属国家</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="updateCountry" name="country" placeholder="请输入所属国家">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" onclick="update()">修改</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--修改模态框--end-->
+
+
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="js/main.min.js"></script>
+<!--消息提示-->
+<script src="js/jconfirm/jquery-confirm.min.js"></script>
+<script src="js/bootstrap-notify.min.js"></script>
+<script type="text/javascript" src="js/lightyear.js"></script>
+<script type="text/javascript" src="js/main.min.js"></script>
+<!--前端表单验证-->
+<script type="text/javascript" src="js/bootstrapValidator.js"></script>
+</body>
+</html>

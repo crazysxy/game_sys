@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.situ.mapper.FeedbackMapper">
+    <insert id="add" parameterType="feedback">
+        insert into feedback_tb (gid,feedback) values(#{gid},#{feedback})
+    </insert>
+    <delete id="del">
+        delete from feedback_tb where id =#{id}
+    </delete>
+    <select id="selectBySearchName" resultType="com.situ.bean.FeedbackVO">
+        SELECT s.id,s.gamename,c.cname,s.feedback
+                FROM gamingcompany c ,
+                (SELECT f.id as id  ,g.gamename as gamename,g.cid as cid,f.feedback as feedback
+                FROM feedback_tb f , gameinf g
+                where f.gid=g.gid ORDER BY f.gid) s
+                where s.cid=c.cid
+        <if test="#{searchGName}!=null">
+            and s.gamename LIKE '%${searchGName}%'
+        </if>
+        <if test="#{searchCName}!=null">
+            AND c.cname LIKE '%${searchCName}%'
+        </if>
+    </select>
+    <select id="selectAllGname" resultType="java.util.Map">
+        select gid , gamename from gameinf
+    </select>
+</mapper>

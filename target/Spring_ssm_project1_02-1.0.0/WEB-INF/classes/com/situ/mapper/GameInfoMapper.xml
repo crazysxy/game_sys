@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.situ.mapper.GameInfoMapper">
+    <insert id="add" >
+        INSERT INTO `gameinf` ( `gamename`, `gametype`, `status`, `cid`, `Releasedate`, `Price`, `gno`) VALUES (#{gameName},#{gameType},#{status},#{cid},#{releaseDate},#{price},#{gno})
+    </insert>
+    <update id="changeStatus">
+        update gameinf set status=0 where gid=#{gid}
+    </update>
+    <update id="update" parameterType="gameInf" >
+        update gameinf set `gamename`=#{gameName}, `gametype`=#{gameType}, `status`=#{status}, `cid`=#{cid}, `Releasedate`=#{releaseDate}, `Price`=#{price}  where gid=#{gid}
+    </update>
+
+    <select id="selectAll" resultType="com.situ.bean.GameInf">
+        select * from  gameinf
+    </select>
+    <select id="selectByGid" resultType="com.situ.bean.GameInf">
+        select * from  gameinf where gid=#{gid}
+    </select>
+    <select id="selectByGname" resultType="com.situ.bean.GameInf">
+        select * from  gameinf where gamename=#{gamename}
+    </select>
+
+    <select id="selectByPage" resultType="com.situ.bean.GameInfoVo">
+        SELECT g.* ,c.cname FROM gameinf g , gamingcompany c where g.cid=c.cid
+
+        <if test="searchGname!=null">
+            and g.gamename like '%${searchGname}%'
+        </if>
+        <if test="maxPrice!=null">
+            and g.price &lt;= #{maxPrice}
+        </if>
+        <if test="minPrice!=null">
+            and g.price>=#{minPrice}
+        </if>
+    </select>
+
+    <select id="getMaxGno" resultType="java.lang.String">
+        select max(gno) from gameinf
+    </select>
+    <select id="selectByCid" resultType="com.situ.bean.GameInf">
+        select * from gameinf where cid=#{cid}
+    </select>
+
+    <select id="topTen" resultType="java.util.Map">
+        select gamename,price from gameinf  where  status=1 order by price desc  limit 10
+    </select>
+
+    <select id="countByYear" resultType="java.util.Map">
+        SELECT count(1) as count,year(Releasedate) as year FROM gameinf GROUP BY year(Releasedate) ORDER BY year asc
+    </select>
+</mapper>

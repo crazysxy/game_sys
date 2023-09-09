@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.situ.mapper.CompanyMapper">
+    <insert id="insert" parameterType="gamingCompany">
+        insert into gamingcompany ( cname ,country) values(#{cname},#{country})
+    </insert>
+    <update id="upd" parameterType="gamingCompany">
+        update gamingcompany set cname=#{cname},country=#{country} where cid=#{cid}
+    </update>
+    <delete id="del">
+        delete from gamingcompany where cid =#{cid}
+    </delete>
+    <select id="selectAll" resultType="com.situ.bean.GamingCompany">
+        select * from gamingcompany
+    </select>
+    <select id="selectBycid" resultType="com.situ.bean.GamingCompany">
+        select * from gamingcompany  where cid=#{cid}
+    </select>
+    <select id="selecrByCname" resultType="com.situ.bean.GamingCompany">
+        select * from gamingcompany where cname='${cname}'
+    </select>
+    
+    <select id="selectPercent" resultType="java.util.Map">
+        SELECT c.cname,COUNT(1)as'count' FROM gameinf g ,gamingcompany c  where g.cid=c.cid GROUP BY g.cid
+    </select>
+</mapper>
